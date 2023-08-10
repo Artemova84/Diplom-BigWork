@@ -22,9 +22,14 @@ dependencies {
     testImplementation 'com.github.javafaker:javafaker:1.0.1'
     testImplementation 'commons-dbutils:commons-dbutils:1.7'
     testImplementation 'mysql:mysql-connector-java:8.0.30'
+    testImplementation group: 'io.rest-assured', name: 'rest-assured', version: '5.1.1'
+    implementation group: 'com.google.code.gson', name: 'gson', version: '2.9.0'
+    implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.29'
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.4.0'
 }
 
 test {
     useJUnitPlatform()
     systemProperty 'selenide.headless', System.getProperty('selenide.headless')
+    systemProperty 'dbUrl', System.getProperty('dbUrl')
 }
