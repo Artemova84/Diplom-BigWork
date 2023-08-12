@@ -20,7 +20,7 @@ import static io.restassured.RestAssured.given;
 public class PaymentApiTest {
     private static DataHelper.Data cardData;
     private static final Gson gson = new Gson();
-    private static final RequestSpecification spec = new RequestSpecBuilder().setBaseUri("http://localhost").setPort(8080)
+    private static final RequestSpecification spec = new RequestSpecBuilder().setBaseUri("http://localhost").setPort(9999)
             .setAccept(ContentType.JSON).setContentType(ContentType.JSON).log(LogDetail.ALL).build();
     private static final String paymentUrl = "/payment";
     private static List<SQLHelper.PaymentEntity> payments;

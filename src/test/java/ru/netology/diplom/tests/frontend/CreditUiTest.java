@@ -81,7 +81,7 @@ public class CreditUiTest {
 
         form = card.clickPayButton();
         form.insertingValueInForm(cardData.getNumber(), cardData.getMonth(), cardData.getYear(), cardData.getHolder(), cardData.getCvc());
-        form.clickCreditButton();
+        form = card.clickCreditButton();
         form.matchesByInsertValue(cardData.getNumber(), cardData.getMonth(), cardData.getYear(), cardData.getHolder(), cardData.getCvc());
     }
 }

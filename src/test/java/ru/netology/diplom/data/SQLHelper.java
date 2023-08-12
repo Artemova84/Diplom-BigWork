@@ -16,7 +16,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 public class SQLHelper {
-    private static QueryRunner runner = new QueryRunner();
+    private static QueryRunner runner;
     private static Connection conn;
 
     private SQLHelper() {
@@ -25,7 +25,7 @@ public class SQLHelper {
     @SneakyThrows
     public static void setup() {
         runner = new QueryRunner();
-        conn = DriverManager.getConnection(System.getProperty("dbUrl"), "app", "pass");
+        conn = DriverManager.getConnection(System.getProperty("db.url"), "app", "pass");
     }
 
 

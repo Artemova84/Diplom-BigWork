@@ -6,15 +6,15 @@ import com.codeborne.selenide.SelenideElement;
 import static com.codeborne.selenide.Selenide.$x;
 
 public class CardPage {
-    private static final SelenideElement Head = $x("//div[@id='root']/div/h2");
-    private static final SelenideElement Card = $x("//div[@id='root']/div/div[contains(@class,'card')]");
+    private final SelenideElement Head = $x("//div[@id='root']/div/h2");
+    private final SelenideElement Card = $x("//div[@id='root']/div/div[contains(@class,'card')]");
 
-    private static final SelenideElement payButton = $x("//span[text()='Купить']//ancestor::button");
-    private static final SelenideElement creditButton = $x("//span[text()='Купить в кредит']//ancestor::button");
-    private static final SelenideElement formHeading = $x("//form//preceding-sibling::h3");
-    private static final SelenideElement form = $x("//form");
-    private static final SelenideElement successNotification = $x("//div[contains(@class, 'notification_status_ok')]");
-    private static final SelenideElement errorNotification = $x("//div[contains(@class, 'notification_status_error')]");
+    private final SelenideElement payButton = $x("//span[text()='Купить']//ancestor::button");
+    private final SelenideElement creditButton = $x("//span[text()='Купить в кредит']//ancestor::button");
+    private final SelenideElement formHeading = $x("//form//preceding-sibling::h3");
+    private final SelenideElement form = $x("//form");
+    private final SelenideElement successNotification = $x("//div[contains(@class, 'notification_status_ok')]");
+    private final SelenideElement errorNotification = $x("//div[contains(@class, 'notification_status_error')]");
 
     public CardPage() {
         Head.should(Condition.visible, Condition.text("Путешествие дня"));
