@@ -14,7 +14,7 @@ import java.util.List;
 import static com.codeborne.selenide.Selenide.open;
 
 public class PaymentUiTest {
-    private static DataHelper.Data cardData;
+    private static DataHelper.Data data;
     private static CardPage card;
     private static FormPage form;
     private static List<SQLHelper.PaymentEntity> payments;
@@ -22,22 +22,23 @@ public class PaymentUiTest {
     private static List<SQLHelper.OrderEntity> orders;
 
     @BeforeEach
-    void setup() {
-        open("http://localhost:8080");
+    public void setupMethod() {
+        open("http://localhost:8080/");
+        card = new CardPage();
     }
 
     @AfterEach
-    public void cleanDataBase() {
-        SQLHelper.cleanDatabase();
+    public void setDownMethod() {
+        SQLHelper.setDown();
     }
 
     @Test
     public void shouldHappyPath() {
-        cardData = DataHelper.getValidApprovedCard();
+        data = DataHelper.getValidApprovedCard();
 
         form = card.clickPayButton();
-        form.insertingValueInForm(cardData.getNumber(), cardData.getMonth(), cardData.getYear(), cardData.getHolder(), cardData.getCvc());
-        form.matchesByInsertValue(cardData.getNumber(), cardData.getMonth(), cardData.getYear(), cardData.getHolder(), cardData.getCvc());
+        form.insertingValueInForm(data.getNumber(), data.getMonth(), data.getYear(), data.getHolder(), data.getCvc());
+        form.matchesByInsertValue(data.getNumber(), data.getMonth(), data.getYear(), data.getHolder(), data.getCvc());
         form.assertBuyOperationIsSuccessful();
 
         payments = SQLHelper.getPayments();
@@ -55,11 +56,11 @@ public class PaymentUiTest {
 
     @Test
     public void shouldNegativePath() {
-        cardData = DataHelper.getValidDeclinedCard();
+        data = DataHelper.getValidDeclinedCard();
 
         form = card.clickPayButton();
-        form.insertingValueInForm(cardData.getNumber(), cardData.getMonth(), cardData.getYear(), cardData.getHolder(), cardData.getCvc());
-        form.matchesByInsertValue(cardData.getNumber(), cardData.getMonth(), cardData.getYear(), cardData.getHolder(), cardData.getCvc());
+        form.insertingValueInForm(data.getNumber(), data.getMonth(), data.getYear(), data.getHolder(), data.getCvc());
+        form.matchesByInsertValue(data.getNumber(), data.getMonth(), data.getYear(), data.getHolder(), data.getCvc());
         form.assertBuyOperationWithErrorNotification();
 
         payments = SQLHelper.getPayments();
@@ -77,224 +78,224 @@ public class PaymentUiTest {
 
     @Test
     public void shouldImmutableInputValuesAfterClickButton() {
-        cardData = DataHelper.getValidApprovedCard();
+        data = DataHelper.getValidApprovedCard();
 
         form = card.clickCreditButton();
-        form.insertingValueInForm(cardData.getNumber(), cardData.getMonth(), cardData.getYear(), cardData.getHolder(), cardData.getCvc());
+        form.insertingValueInForm(data.getNumber(), data.getMonth(), data.getYear(), data.getHolder(), data.getCvc());
         card.clickPayButton();
-        form.matchesByInsertValue(cardData.getNumber(), cardData.getMonth(), cardData.getYear(), cardData.getHolder(), cardData.getCvc());
+        form.matchesByInsertValue(data.getNumber(), data.getMonth(), data.getYear(), data.getHolder(), data.getCvc());
     }
 
     @Test
     public void shouldVisibleNotificationWithEmptyNumber() {
-        cardData = DataHelper.getValidApprovedCard();
+        data = DataHelper.getValidApprovedCard();
         form = card.clickPayButton();
-        form.insertingValueInForm("", cardData.getMonth(), cardData.getYear(), cardData.getHolder(), cardData.getCvc());
-        form.matchesByInsertValue("", cardData.getMonth(), cardData.getYear(), cardData.getHolder(), cardData.getCvc());
+        form.insertingValueInForm("", data.getMonth(), data.getYear(), data.getHolder(), data.getCvc());
+        form.matchesByInsertValue("", data.getMonth(), data.getYear(), data.getHolder(), data.getCvc());
         form.assertNumberFieldIsEmptyValue();
     }
 
     @Test
     public void shouldSuccessfulWithStartEndSpacebarInNumber() {
-        cardData = DataHelper.getValidApprovedCard();
-        var number = " " + cardData.getNumber() + " ";
-        var matchesNumber = cardData.getNumber();
+        data = DataHelper.getValidApprovedCard();
+        var number = " " + data.getNumber() + " ";
+        var matchesNumber = data.getNumber();
 
         form = card.clickPayButton();
-        form.insertingValueInForm(number, cardData.getMonth(), cardData.getYear(), cardData.getHolder(), cardData.getCvc());
-        form.matchesByInsertValue(matchesNumber, cardData.getMonth(), cardData.getYear(), cardData.getHolder(), cardData.getCvc());
+        form.insertingValueInForm(number, data.getMonth(), data.getYear(), data.getHolder(), data.getCvc());
+        form.matchesByInsertValue(matchesNumber, data.getMonth(), data.getYear(), data.getHolder(), data.getCvc());
         form.assertBuyOperationIsSuccessful();
     }
 
     @Test
     public void shouldVisibleNotificationWith16DigitsInNumber() {
-        cardData = DataHelper.getValidApprovedCard();
+        data = DataHelper.getValidApprovedCard();
         var number = DataHelper.generateInvalidCardNumberWith16RandomNumerals();
         var matchesNumber = number;
 
         form = card.clickPayButton();
-        form.insertingValueInForm(number, cardData.getMonth(), cardData.getYear(), cardData.getHolder(), cardData.getCvc());
-        form.matchesByInsertValue(matchesNumber, cardData.getMonth(), cardData.getYear(), cardData.getHolder(), cardData.getCvc());
+        form.insertingValueInForm(number, data.getMonth(), data.getYear(), data.getHolder(), data.getCvc());
+        form.matchesByInsertValue(matchesNumber, data.getMonth(), data.getYear(), data.getHolder(), data.getCvc());
         form.assertNumberFieldIsInvalidValue();
     }
 
     @Test
     public void shouldUnsuccessfulWith10DigitsInNumber() {
-        cardData = DataHelper.getValidApprovedCard();
+        data = DataHelper.getValidApprovedCard();
         var number = DataHelper.generateValidCardNumberWith10Numerals();
         var matchesNumber = number;
 
         form = card.clickPayButton();
-        form.insertingValueInForm(number, cardData.getMonth(), cardData.getYear(), cardData.getHolder(), cardData.getCvc());
-        form.matchesByInsertValue(matchesNumber, cardData.getMonth(), cardData.getYear(), cardData.getHolder(), cardData.getCvc());
+        form.insertingValueInForm(number, data.getMonth(), data.getYear(), data.getHolder(), data.getCvc());
+        form.matchesByInsertValue(matchesNumber, data.getMonth(), data.getYear(), data.getHolder(), data.getCvc());
         form.assertBuyOperationWithErrorNotification();
     }
 
     @Test
     public void shouldVisibleNotificationWithInvalidSymbolsInNumber() {
-        cardData = DataHelper.getValidApprovedCard();
+        data = DataHelper.getValidApprovedCard();
         var number = DataHelper.generateInvalidCardNumberWithRandomSymbols();
         var matchesNumber = "";
 
         form = card.clickPayButton();
-        form.insertingValueInForm(number, cardData.getMonth(), cardData.getYear(), cardData.getHolder(), cardData.getCvc());
-        form.matchesByInsertValue(matchesNumber, cardData.getMonth(), cardData.getYear(), cardData.getHolder(), cardData.getCvc());
+        form.insertingValueInForm(number, data.getMonth(), data.getYear(), data.getHolder(), data.getCvc());
+        form.matchesByInsertValue(matchesNumber, data.getMonth(), data.getYear(), data.getHolder(), data.getCvc());
         form.assertNumberFieldIsEmptyValue();
     }
 
     @Test
     public void shouldVisibleNotificationWithEmptyMonth() {
-        cardData = DataHelper.getValidApprovedCard();
+        data = DataHelper.getValidApprovedCard();
         var month = "";
         var matchesMonth = "";
 
         form = card.clickPayButton();
-        form.insertingValueInForm(cardData.getNumber(), month, cardData.getYear(), cardData.getHolder(), cardData.getCvc());
-        form.matchesByInsertValue(cardData.getNumber(), matchesMonth, cardData.getYear(), cardData.getHolder(), cardData.getCvc());
+        form.insertingValueInForm(data.getNumber(), month, data.getYear(), data.getHolder(), data.getCvc());
+        form.matchesByInsertValue(data.getNumber(), matchesMonth, data.getYear(), data.getHolder(), data.getCvc());
         form.assertMonthFieldIsEmptyValue();
     }
 
     @Test
     public void shouldVisibleNotificationWith00InMonth() {
-        cardData = DataHelper.getValidApprovedCard();
+        data = DataHelper.getValidApprovedCard();
         var month = "00";
         var matchesMonth = month;
 
         form = card.clickPayButton();
-        form.insertingValueInForm(cardData.getNumber(), month, cardData.getYear(), cardData.getHolder(), cardData.getCvc());
-        form.matchesByInsertValue(cardData.getNumber(), matchesMonth, cardData.getYear(), cardData.getHolder(), cardData.getCvc());
+        form.insertingValueInForm(data.getNumber(), month, data.getYear(), data.getHolder(), data.getCvc());
+        form.matchesByInsertValue(data.getNumber(), matchesMonth, data.getYear(), data.getHolder(), data.getCvc());
         form.assertMonthFieldIsInvalidValue();
     }
 
     @Test
     public void shouldVisibleNotificationWith13InMonth() {
-        cardData = DataHelper.getValidApprovedCard();
+        data = DataHelper.getValidApprovedCard();
         var month = "13";
         var matchesMonth = month;
 
         form = card.clickPayButton();
-        form.insertingValueInForm(cardData.getNumber(), month, cardData.getYear(), cardData.getHolder(), cardData.getCvc());
-        form.matchesByInsertValue(cardData.getNumber(), matchesMonth, cardData.getYear(), cardData.getHolder(), cardData.getCvc());
+        form.insertingValueInForm(data.getNumber(), month, data.getYear(), data.getHolder(), data.getCvc());
+        form.matchesByInsertValue(data.getNumber(), matchesMonth, data.getYear(), data.getHolder(), data.getCvc());
         form.assertMonthFieldIsInvalidValue();
     }
 
     @Test
     public void shouldVisibleNotificationWithInvalidSymbolsInMonth() {
-        cardData = DataHelper.getValidApprovedCard();
+        data = DataHelper.getValidApprovedCard();
         var month = DataHelper.generateMonthWithRandomSymbols();
         var matchesMonth = "";
 
         form = card.clickPayButton();
-        form.insertingValueInForm(cardData.getNumber(), month, cardData.getYear(), cardData.getHolder(), cardData.getCvc());
-        form.matchesByInsertValue(cardData.getNumber(), matchesMonth, cardData.getYear(), cardData.getHolder(), cardData.getCvc());
+        form.insertingValueInForm(data.getNumber(), month, data.getYear(), data.getHolder(), data.getCvc());
+        form.matchesByInsertValue(data.getNumber(), matchesMonth, data.getYear(), data.getHolder(), data.getCvc());
         form.assertMonthFieldIsEmptyValue();
     }
 
     @Test
     public void shouldVisibleNotificationWithEmptyYear() {
-        cardData = DataHelper.getValidApprovedCard();
+        data = DataHelper.getValidApprovedCard();
         var year = "";
         var matchesYear = year;
 
         form = card.clickPayButton();
-        form.insertingValueInForm(cardData.getNumber(), cardData.getMonth(), year, cardData.getHolder(), cardData.getCvc());
-        form.matchesByInsertValue(cardData.getNumber(), cardData.getMonth(), matchesYear, cardData.getHolder(), cardData.getCvc());
+        form.insertingValueInForm(data.getNumber(), data.getMonth(), year, data.getHolder(), data.getCvc());
+        form.matchesByInsertValue(data.getNumber(), data.getMonth(), matchesYear, data.getHolder(), data.getCvc());
         form.assertYearFieldIsEmptyValue();
     }
 
     @Test
     public void shouldVisibleNotificationWithInvalidSymbolsInYear() {
-        cardData = DataHelper.getValidApprovedCard();
+        data = DataHelper.getValidApprovedCard();
         var year = DataHelper.generateMonthWithRandomSymbols();
         var matchesYear = "";
 
         form = card.clickPayButton();
-        form.insertingValueInForm(cardData.getNumber(), cardData.getMonth(), year, cardData.getHolder(), cardData.getCvc());
-        form.matchesByInsertValue(cardData.getNumber(), cardData.getMonth(), matchesYear, cardData.getHolder(), cardData.getCvc());
+        form.insertingValueInForm(data.getNumber(), data.getMonth(), year, data.getHolder(), data.getCvc());
+        form.matchesByInsertValue(data.getNumber(), data.getMonth(), matchesYear, data.getHolder(), data.getCvc());
         form.assertYearFieldIsEmptyValue();
     }
 
     @Test
     public void shouldVisibleNotificationWithEmptyHolder() {
-        cardData = DataHelper.getValidApprovedCard();
+        data = DataHelper.getValidApprovedCard();
         var holder = "";
         var matchesHolder = holder;
 
         form = card.clickPayButton();
-        form.insertingValueInForm(cardData.getNumber(), cardData.getMonth(), cardData.getYear(), holder, cardData.getCvc());
-        form.matchesByInsertValue(cardData.getNumber(), cardData.getMonth(), cardData.getYear(), matchesHolder, cardData.getCvc());
+        form.insertingValueInForm(data.getNumber(), data.getMonth(), data.getYear(), holder, data.getCvc());
+        form.matchesByInsertValue(data.getNumber(), data.getMonth(), data.getYear(), matchesHolder, data.getCvc());
         form.assertHolderFieldIsEmptyValue();
     }
 
     @Test
     public void shouldAutoDeletingStartEndSpacebarInHolder() {
-        cardData = DataHelper.getValidApprovedCard();
-        var holder = "-" + cardData.getHolder() + "-";
-        var matchesHolder = cardData.getHolder();
+        data = DataHelper.getValidApprovedCard();
+        var holder = "-" + data.getHolder() + "-";
+        var matchesHolder = data.getHolder();
 
         form = card.clickPayButton();
-        form.insertingValueInForm(cardData.getNumber(), cardData.getMonth(), cardData.getYear(), holder, cardData.getCvc());
-        form.matchesByInsertValue(cardData.getNumber(), cardData.getMonth(), cardData.getYear(), matchesHolder, cardData.getCvc());
+        form.insertingValueInForm(data.getNumber(), data.getMonth(), data.getYear(), holder, data.getCvc());
+        form.matchesByInsertValue(data.getNumber(), data.getMonth(), data.getYear(), matchesHolder, data.getCvc());
         form.assertBuyOperationIsSuccessful();
     }
 
     @Test
     public void shouldVisibleNotificationWithCyrillicInHolder() {
-        cardData = DataHelper.getValidApprovedCard();
+        data = DataHelper.getValidApprovedCard();
         var holder = DataHelper.generateInvalidHolderWithCyrillicSymbols();
         var matchesHolder = "";
 
         form = card.clickPayButton();
-        form.insertingValueInForm(cardData.getNumber(), cardData.getMonth(), cardData.getYear(), holder, cardData.getCvc());
-        form.matchesByInsertValue(cardData.getNumber(), cardData.getMonth(), cardData.getYear(), matchesHolder, cardData.getCvc());
+        form.insertingValueInForm(data.getNumber(), data.getMonth(), data.getYear(), holder, data.getCvc());
+        form.matchesByInsertValue(data.getNumber(), data.getMonth(), data.getYear(), matchesHolder, data.getCvc());
         form.assertHolderFieldIsEmptyValue();
     }
 
     @Test
     public void shouldVisibleNotificationWithInvalidSymbolInHolder() {
-        cardData = DataHelper.getValidApprovedCard();
+        data = DataHelper.getValidApprovedCard();
         var holder = DataHelper.generateHolderWithInvalidSymbols();
         var matchesHolder = "";
 
         form = card.clickPayButton();
-        form.insertingValueInForm(cardData.getNumber(), cardData.getMonth(), cardData.getYear(), holder, cardData.getCvc());
-        form.matchesByInsertValue(cardData.getNumber(), cardData.getMonth(), cardData.getYear(), matchesHolder, cardData.getCvc());
+        form.insertingValueInForm(data.getNumber(), data.getMonth(), data.getYear(), holder, data.getCvc());
+        form.matchesByInsertValue(data.getNumber(), data.getMonth(), data.getYear(), matchesHolder, data.getCvc());
         form.assertHolderFieldIsEmptyValue();
     }
 
     @Test
     public void shouldVisibleNotificationWithEmptyCVC() {
-        cardData = DataHelper.getValidApprovedCard();
+        data = DataHelper.getValidApprovedCard();
         var cvc = "";
         var matchesCvc = cvc;
 
         form = card.clickPayButton();
-        form.insertingValueInForm(cardData.getNumber(), cardData.getMonth(), cardData.getYear(), cardData.getHolder(), cvc);
-        form.matchesByInsertValue(cardData.getNumber(), cardData.getMonth(), cardData.getYear(), cardData.getHolder(), matchesCvc);
+        form.insertingValueInForm(data.getNumber(), data.getMonth(), data.getYear(), data.getHolder(), cvc);
+        form.matchesByInsertValue(data.getNumber(), data.getMonth(), data.getYear(), data.getHolder(), matchesCvc);
         form.assertCvcFieldIsEmptyValue();
     }
 
     @Test
     public void shouldVisibleNotificationWith2DigitsInCVC() {
-        cardData = DataHelper.getValidApprovedCard();
+        data = DataHelper.getValidApprovedCard();
         var cvc = DataHelper.generateInvalidCVCWith2Numerals();
         var matchesCvc = cvc;
 
         form = card.clickPayButton();
-        form.insertingValueInForm(cardData.getNumber(), cardData.getMonth(), cardData.getYear(), cardData.getHolder(), cvc);
-        form.matchesByInsertValue(cardData.getNumber(), cardData.getMonth(), cardData.getYear(), cardData.getHolder(), matchesCvc);
+        form.insertingValueInForm(data.getNumber(), data.getMonth(), data.getYear(), data.getHolder(), cvc);
+        form.matchesByInsertValue(data.getNumber(), data.getMonth(), data.getYear(), data.getHolder(), matchesCvc);
         form.assertCvcFieldIsInvalidValue();
     }
 
     @Test
     public void shouldVisibleNotificationWithInvalidSymbolsInCVC() {
-        cardData = DataHelper.getValidApprovedCard();
+        data = DataHelper.getValidApprovedCard();
         var cvc = DataHelper.generateInvalidCVCWithRandomSymbols();
         var matchesCvc = "";
 
         form = card.clickPayButton();
-        form.insertingValueInForm(cardData.getNumber(), cardData.getMonth(), cardData.getYear(), cardData.getHolder(), cvc);
-        form.matchesByInsertValue(cardData.getNumber(), cardData.getMonth(), cardData.getYear(), cardData.getHolder(), matchesCvc);
+        form.insertingValueInForm(data.getNumber(), data.getMonth(), data.getYear(), data.getHolder(), cvc);
+        form.matchesByInsertValue(data.getNumber(), data.getMonth(), data.getYear(), data.getHolder(), matchesCvc);
         form.assertCvcFieldIsEmptyValue();
     }
 }

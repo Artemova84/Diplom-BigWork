@@ -5,21 +5,16 @@ import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import ru.netology.diplom.data.DataHelper;
 import ru.netology.diplom.data.SQLHelper;
 
 import java.util.List;
-
-import static com.codeborne.selenide.Selenide.open;
 import static io.restassured.RestAssured.given;
 
 
 public class CreditApiTest {
-    private static DataHelper.Data cardData;
+    private static DataHelper.Data data;
     private static final Gson gson = new Gson();
     private static final RequestSpecification spec = new RequestSpecBuilder().setBaseUri("http://localhost").setPort(9999)
             .setAccept(ContentType.JSON).setContentType(ContentType.JSON).log(LogDetail.ALL).build();
@@ -28,20 +23,15 @@ public class CreditApiTest {
     private static List<SQLHelper.CreditRequestEntity> credits;
     private static List<SQLHelper.OrderEntity> orders;
 
-    @BeforeEach
-    void setup() {
-        open("http://localhost:8080");
-    }
-
     @AfterEach
-    public void cleanDataBase() {
-        SQLHelper.cleanDatabase();
+    public void setDownMethod() {
+        SQLHelper.setDown();
     }
 
     @Test
     public void shouldHappyPath() {
-        cardData = DataHelper.getValidApprovedCard();
-        var body = gson.toJson(cardData);
+        data = DataHelper.getValidApprovedCard();
+        var body = gson.toJson(data);
         given().spec(spec).body(body)
                 .when().post(creditUrl)
                 .then().statusCode(200);
@@ -60,8 +50,8 @@ public class CreditApiTest {
 
     @Test
     public void shouldNegativePath() {
-        cardData = DataHelper.getValidDeclinedCard();
-        var body = gson.toJson(cardData);
+        data = DataHelper.getValidDeclinedCard();
+        var body = gson.toJson(data);
         given().spec(spec).body(body)
                 .when().post(creditUrl)
                 .then().statusCode(200);
@@ -80,7 +70,7 @@ public class CreditApiTest {
 
     @Test
     public void shouldStatus400WithEmptyBody() {
-        cardData = DataHelper.getValidApprovedCard();
+        data = DataHelper.getValidApprovedCard();
         given().spec(spec)
                 .when().post(creditUrl)
                 .then().statusCode(400);
@@ -95,9 +85,9 @@ public class CreditApiTest {
 
     @Test
     public void shouldStatus400WithEmptyNumber() {
-        cardData = new DataHelper.Data(null, DataHelper.generateMonth(1), DataHelper.generateYear(2),
+        data = new DataHelper.Data(null, DataHelper.generateMonth(1), DataHelper.generateYear(2),
                 DataHelper.generateValidHolder(), DataHelper.generateValidCVC());
-        var body = gson.toJson(cardData);
+        var body = gson.toJson(data);
         given().spec(spec).body(body)
                 .when().post(creditUrl)
                 .then().statusCode(400);
@@ -112,9 +102,9 @@ public class CreditApiTest {
 
     @Test
     public void shouldStatus400WithEmptyMonth() {
-        cardData = new DataHelper.Data(DataHelper.getNumberByStatus("approved"), null, DataHelper.generateYear(2),
+       data = new DataHelper.Data(DataHelper.getNumberByStatus("approved"), null, DataHelper.generateYear(2),
                 DataHelper.generateValidHolder(), DataHelper.generateValidCVC());
-        var body = gson.toJson(cardData);
+        var body = gson.toJson(data);
         given().spec(spec).body(body)
                 .when().post(creditUrl)
                 .then().statusCode(400);
@@ -129,9 +119,9 @@ public class CreditApiTest {
 
     @Test
     public void shouldStatus400WithEmptyYear() {
-        cardData = new DataHelper.Data(DataHelper.getNumberByStatus("approved"), DataHelper.generateMonth(1), null,
+        data = new DataHelper.Data(DataHelper.getNumberByStatus("approved"), DataHelper.generateMonth(1), null,
                 DataHelper.generateValidHolder(), DataHelper.generateValidCVC());
-        var body = gson.toJson(cardData);
+        var body = gson.toJson(data);
         given().spec(spec).body(body)
                 .when().post(creditUrl)
                 .then().statusCode(400);
@@ -146,9 +136,9 @@ public class CreditApiTest {
 
     @Test
     public void shouldStatus400WithEmptyHolder() {
-        cardData = new DataHelper.Data(DataHelper.getNumberByStatus("approved"), DataHelper.generateMonth(1),
+        data = new DataHelper.Data(DataHelper.getNumberByStatus("approved"), DataHelper.generateMonth(1),
                 DataHelper.generateYear(2), null, DataHelper.generateValidCVC());
-        var body = gson.toJson(cardData);
+        var body = gson.toJson(data);
         given().spec(spec).body(body)
                 .when().post(creditUrl)
                 .then().statusCode(400);
@@ -163,9 +153,9 @@ public class CreditApiTest {
 
     @Test
     public void shouldStatus400WithEmptyCvc() {
-        cardData = new DataHelper.Data(DataHelper.getNumberByStatus("approved"), DataHelper.generateMonth(1),
+        data = new DataHelper.Data(DataHelper.getNumberByStatus("approved"), DataHelper.generateMonth(1),
                 DataHelper.generateYear(2), DataHelper.generateValidHolder(), null);
-        var body = gson.toJson(cardData);
+        var body = gson.toJson(data);
         given().spec(spec).body(body)
                 .when().post(creditUrl)
                 .then().statusCode(400);

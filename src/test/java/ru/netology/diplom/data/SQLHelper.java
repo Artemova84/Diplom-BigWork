@@ -1,44 +1,34 @@
 
 package ru.netology.diplom.data;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.SneakyThrows;
+import lombok.*;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.List;
 
+@NoArgsConstructor
 public class SQLHelper {
     private static QueryRunner runner;
     private static Connection conn;
 
-    private SQLHelper() {
-    }
-
     @SneakyThrows
-    public static void setup() {
+    public static void getConn() {
         runner = new QueryRunner();
         conn = DriverManager.getConnection(System.getProperty("db.url"), "app", "pass");
     }
 
-
-    private static Connection getConn() throws SQLException {
-        return DriverManager.getConnection("jdbc:mysql://localhost:3306/app", "app", "pass");
-    }
-
     @SneakyThrows
-    public static void cleanDatabase() {
-        var connection = getConn();
-        runner.execute(connection, "DELETE FROM credit_request_entity;");
-        runner.execute(connection, "DELETE FROM payment_entity;");
-        runner.execute(connection, "DELETE FROM order_entity;");
+    public static void setDown() {
+        getConn();
+        var sqlUpdateOne = "DELETE FROM credit_request_entity;";
+        var sqlUpdateTwo = "DELETE FROM payment_entity;";
+        var sqlUpdateThree = "DELETE FROM order_entity;";
+        runner.update(conn, sqlUpdateOne);
+        runner.update(conn, sqlUpdateTwo);
+        runner.update(conn, sqlUpdateThree);
     }
 
     @Data
@@ -54,7 +44,7 @@ public class SQLHelper {
 
     @SneakyThrows
     public static List<PaymentEntity> getPayments() {
-        setup();
+        getConn();
         var sqlQuery = "SELECT * FROM payment_entity ORDER BY created DESC;";
         ResultSetHandler<List<PaymentEntity>> resultHandler = new BeanListHandler<>(PaymentEntity.class);
         return runner.query(conn, sqlQuery, resultHandler);
@@ -72,7 +62,7 @@ public class SQLHelper {
 
     @SneakyThrows
     public static List<CreditRequestEntity> getCreditsRequest() {
-        setup();
+        getConn();
         var sqlQuery = "SELECT * FROM credit_request_entity ORDER BY created DESC;";
         ResultSetHandler<List<CreditRequestEntity>> resultHandler = new BeanListHandler<>(CreditRequestEntity.class);
         return runner.query(conn, sqlQuery, resultHandler);
@@ -90,7 +80,7 @@ public class SQLHelper {
 
     @SneakyThrows
     public static List<OrderEntity> getOrders() {
-        setup();
+        getConn();
         var sqlQuery = "SELECT * FROM order_entity ORDER BY created DESC;";
         ResultSetHandler<List<OrderEntity>> resultHandler = new BeanListHandler<>(OrderEntity.class);
         return runner.query(conn, sqlQuery, resultHandler);

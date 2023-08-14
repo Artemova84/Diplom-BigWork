@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class CreditUiTest {
-    private static DataHelper.Data cardData;
+    private static DataHelper.Data data;
 
     private static CardPage card;
     private static FormPage form;
@@ -24,22 +24,23 @@ public class CreditUiTest {
     private static List<SQLHelper.OrderEntity> orders;
 
     @BeforeEach
-    void setup() {
-        open("http://localhost:8080");
+    public void setupMethod() {
+        open("http://localhost:8080/");
+        card = new CardPage();
     }
 
     @AfterEach
-    public void cleanDataBase() {
-        SQLHelper.cleanDatabase();
+    public void setDownMethod() {
+        SQLHelper.setDown();
     }
 
     @Test
     public void shouldHappyPath() {
-        cardData = DataHelper.getValidApprovedCard();
+        data = DataHelper.getValidApprovedCard();
 
         form = card.clickCreditButton();
-        form.insertingValueInForm(cardData.getNumber(), cardData.getMonth(), cardData.getYear(), cardData.getHolder(), cardData.getCvc());
-        form.matchesByInsertValue(cardData.getNumber(), cardData.getMonth(), cardData.getYear(), cardData.getHolder(), cardData.getCvc());
+        form.insertingValueInForm(data.getNumber(), data.getMonth(), data.getYear(), data.getHolder(), data.getCvc());
+        form.matchesByInsertValue(data.getNumber(), data.getMonth(), data.getYear(), data.getHolder(), data.getCvc());
         form.assertBuyOperationIsSuccessful();
 
         payments = SQLHelper.getPayments();
@@ -56,11 +57,11 @@ public class CreditUiTest {
 
     @Test
     public void shouldNegativePath() {
-        cardData = DataHelper.getValidDeclinedCard();
+        data = DataHelper.getValidDeclinedCard();
 
         form = card.clickCreditButton();
-        form.insertingValueInForm(cardData.getNumber(), cardData.getMonth(), cardData.getYear(), cardData.getHolder(), cardData.getCvc());
-        form.matchesByInsertValue(cardData.getNumber(), cardData.getMonth(), cardData.getYear(), cardData.getHolder(), cardData.getCvc());
+        form.insertingValueInForm(data.getNumber(), data.getMonth(), data.getYear(), data.getHolder(), data.getCvc());
+        form.matchesByInsertValue(data.getNumber(), data.getMonth(), data.getYear(), data.getHolder(), data.getCvc());
         form.assertBuyOperationWithErrorNotification();
 
         payments = SQLHelper.getPayments();
@@ -77,11 +78,11 @@ public class CreditUiTest {
 
     @Test
     public void shouldImmutableInputValuesAfterClickButton() {
-        cardData = DataHelper.getValidApprovedCard();
+        data = DataHelper.getValidApprovedCard();
 
         form = card.clickPayButton();
-        form.insertingValueInForm(cardData.getNumber(), cardData.getMonth(), cardData.getYear(), cardData.getHolder(), cardData.getCvc());
+        form.insertingValueInForm(data.getNumber(), data.getMonth(), data.getYear(), data.getHolder(), data.getCvc());
         form = card.clickCreditButton();
-        form.matchesByInsertValue(cardData.getNumber(), cardData.getMonth(), cardData.getYear(), cardData.getHolder(), cardData.getCvc());
+        form.matchesByInsertValue(data.getNumber(), data.getMonth(), data.getYear(), data.getHolder(), data.getCvc());
     }
 }

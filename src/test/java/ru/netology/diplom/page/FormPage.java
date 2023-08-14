@@ -5,31 +5,31 @@ import com.codeborne.selenide.SelenideElement;
 
 import java.time.Duration;
 
-import static com.codeborne.selenide.Selenide.$x;
+import static com.codeborne.selenide.Selenide.*;
 import static org.junit.Assert.assertEquals;
 
 public class FormPage {
-    private final SelenideElement Card = $x("//div[@id='root']/div/div[contains(@class, 'card')]");
+    private static final SelenideElement Card = $x("//div[@id='root']/div/div[contains(@class, 'card')]");
 
-    private final SelenideElement payButton = $x("//span[text()='Купить']//ancestor::button");
-    private final SelenideElement creditButton = $x("//span[text()='Купить в кредит']//ancestor::button");
-    private final SelenideElement form = $x("//form");
-    private final SelenideElement numberLabel = form.$x(".//span[text()='Номер карты']//ancestor::div/span");
-    private final SelenideElement numberInput = numberLabel.$x(".//ancestor::span//input");
-    private final SelenideElement monthLabel = form.$x(".//span[text()='Месяц']//ancestor::div/span/span[1]/span");
-    private final SelenideElement monthInput = monthLabel.$x(".//input");
-    private final SelenideElement yearLabel = form.$x(".//span[text()='Год']//ancestor::div/span/span[2]/span");
-    private final SelenideElement yearInput = yearLabel.$x(".//input");
-    private final SelenideElement holderLabel = form.$x(".//span[text()='Владелец']//ancestor::div/span/span[1]/span");
-    private final SelenideElement holderInput = holderLabel.$x(".//input");
-    private final SelenideElement cvcLabel = form.$x(".//span[text()='CVC/CVV']//ancestor::div/span/span[2]/span");
-    private final SelenideElement cvcInput = cvcLabel.$x(".//input");
-    private final SelenideElement continuousButton = form.$x(".//span[text()='Продолжить']//ancestor::button");
+    private static final SelenideElement payButton = $x("//span[text()='Купить']//ancestor::button");
+    private static final SelenideElement creditButton = $x("//span[text()='Купить в кредит']//ancestor::button");
+    private static final SelenideElement form = $x("//form");
+    private static final SelenideElement numberLabel = form.$x(".//span[text()='Номер карты']//ancestor::div/span");
+    private static final SelenideElement numberInput = numberLabel.$x(".//ancestor::span//input");
+    private static final SelenideElement monthLabel = form.$x(".//span[text()='Месяц']//ancestor::div/span/span[1]/span");
+    private static final SelenideElement monthInput = monthLabel.$x(".//input");
+    private static final SelenideElement yearLabel = form.$x(".//span[text()='Год']//ancestor::div/span/span[2]/span");
+    private static final SelenideElement yearInput = yearLabel.$x(".//span[text()='Год']//ancestor::div/span/span[2]/span");
+    private static final SelenideElement holderLabel = form.$x(".//span[text()='Владелец']//ancestor::div/span/span[1]/span");
+    private static final SelenideElement holderInput = holderLabel.$x(".//input");
+    private static final SelenideElement cvcLabel = form.$x(".//span[text()='CVC/CVV']//ancestor::div/span/span[2]/span");
+    private static final SelenideElement cvcInput = cvcLabel.$x(".//input");
+    private static final SelenideElement continueButton = form.$x(".//span[text()='Продолжить']//ancestor::button");
 
-    private final SelenideElement successNotification = $x("//div[contains(@class, 'notification_status_ok')]");
-    private final SelenideElement successCloseButton = successNotification.$x("./button");
-    private final SelenideElement errorNotification = $x("//div[contains(@class, 'notification_status_error')]");
-    private final SelenideElement errorCloseButton = errorNotification.$x("./button");
+    private static final SelenideElement successNotification = $x("//div[contains(@class, 'notification_status_ok')]");
+    private static final SelenideElement successCloseButton = successNotification.$x("./button");
+    private static final SelenideElement errorNotification = $x("//div[contains(@class, 'notification_status_error')]");
+    private static final SelenideElement errorCloseButton = errorNotification.$x("./button");
 
     public FormPage() {
         Card.should(Condition.visible);
@@ -52,7 +52,7 @@ public class FormPage {
         holderInput.val(holder);
         cvcLabel.click();
         cvcInput.val(cvc);
-        continuousButton.click();
+        continueButton.click();
     }
 
     public void matchesByInsertValue(String number, String month, String year, String holder, String cvc) {
