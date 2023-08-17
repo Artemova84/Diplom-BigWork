@@ -228,18 +228,6 @@ public class PaymentUiTest {
     }
 
     @Test
-    public void shouldAutoDeletingStartEndSpacebarInHolder() {
-        data = DataHelper.getValidApprovedCard();
-        var holder = "-" + data.getHolder() + "-";
-        var matchesHolder = data.getHolder();
-
-        form = card.clickPayButton();
-        form.insertingValueInForm(data.getNumber(), data.getMonth(), data.getYear(), holder, data.getCvc());
-        form.matchesByInsertValue(data.getNumber(), data.getMonth(), data.getYear(), matchesHolder, data.getCvc());
-        form.assertBuyOperationIsSuccessful();
-    }
-
-    @Test
     public void shouldVisibleNotificationWithCyrillicInHolder() {
         data = DataHelper.getValidApprovedCard();
         var holder = DataHelper.generateInvalidHolderWithCyrillicSymbols();

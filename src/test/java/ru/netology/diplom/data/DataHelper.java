@@ -1,8 +1,6 @@
 package ru.netology.diplom.data;
 
 import com.github.javafaker.Faker;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.Value;
 
 import java.time.LocalDate;

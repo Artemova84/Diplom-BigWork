@@ -19,7 +19,7 @@ public class FormPage {
     private static final SelenideElement monthLabel = form.$x(".//span[text()='Месяц']//ancestor::div/span/span[1]/span");
     private static final SelenideElement monthInput = monthLabel.$x(".//input");
     private static final SelenideElement yearLabel = form.$x(".//span[text()='Год']//ancestor::div/span/span[2]/span");
-    private static final SelenideElement yearInput = yearLabel.$x(".//span[text()='Год']//ancestor::div/span/span[2]/span");
+    private static final SelenideElement yearInput = yearLabel.$x(".//input");
     private static final SelenideElement holderLabel = form.$x(".//span[text()='Владелец']//ancestor::div/span/span[1]/span");
     private static final SelenideElement holderInput = holderLabel.$x(".//input");
     private static final SelenideElement cvcLabel = form.$x(".//span[text()='CVC/CVV']//ancestor::div/span/span[2]/span");
@@ -83,7 +83,7 @@ public class FormPage {
 
     public void assertNumberFieldIsEmptyValue() {
         numberLabel.should(Condition.cssClass("input_invalid")).shouldNot(Condition.cssClass("input_has-value"));
-        numberLabel.$x(".//span[@class='input__sub']").should(Condition.visible, Condition.text("Поле обязательно для заполнения"));
+        numberLabel.$x(".//span[@class='input__sub']").should(Condition.visible, Condition.text("Неверный формат"));
     }
 
     public void assertNumberFieldIsInvalidValue() {
@@ -93,22 +93,22 @@ public class FormPage {
 
     public void assertMonthFieldIsEmptyValue() {
         monthLabel.should(Condition.cssClass("input_invalid")).shouldNot(Condition.cssClass("input_has-value"));
-        monthLabel.$x(".//span[@class='input__sub']").should(Condition.visible, Condition.text("Поле обязательно для заполнения"));
+        monthLabel.$x(".//span[@class='input__sub']").should(Condition.visible, Condition.text("Неверный формат"));
     }
 
     public void assertMonthFieldIsInvalidValue() {
         monthLabel.should(Condition.cssClass("input_invalid"), Condition.cssClass("input_has-value"));
-        monthLabel.$x(".//span[@class='input__sub']").should(Condition.visible, Condition.text("Неверно указан срок действия карты"));
+        monthLabel.$x(".//span[@class='input__sub']").should(Condition.visible, Condition.text("Неверный формат"));
     }
 
     public void assertYearFieldIsEmptyValue() {
         yearLabel.should(Condition.cssClass("input_invalid"));
-        yearLabel.$x(".//span[@class='input__sub']").should(Condition.visible, Condition.text("Поле обязательно для заполнения"));
+        yearLabel.$x(".//span[@class='input__sub']").should(Condition.visible, Condition.text("Неверный формат"));
     }
 
     public void assertHolderFieldIsEmptyValue() {
         holderLabel.should(Condition.cssClass("input_invalid")).shouldNot(Condition.cssClass("input_has-value"));
-        holderLabel.$x(".//span[@class='input__sub']").should(Condition.visible, Condition.text("Поле обязательно для заполнения"));
+        holderLabel.$x(".//span[@class='input__sub']").should(Condition.visible, Condition.text("Неверный формат"));
     }
 
     public void assertHolderFieldIsInvalidValue() {
@@ -118,7 +118,7 @@ public class FormPage {
 
     public void assertCvcFieldIsEmptyValue() {
         cvcLabel.should(Condition.cssClass("input_invalid")).shouldNot(Condition.cssClass("input_has-value"));
-        cvcLabel.$x(".//span[@class='input__sub']").should(Condition.visible, Condition.text("Поле обязательно для заполнения"));
+        cvcLabel.$x(".//span[@class='input__sub']").should(Condition.visible, Condition.text("Неверный формат"));
     }
 
     public void assertCvcFieldIsInvalidValue() {

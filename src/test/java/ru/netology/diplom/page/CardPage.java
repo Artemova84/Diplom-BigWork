@@ -11,7 +11,7 @@ public class CardPage {
 
     private static final SelenideElement payButton = $x("//span[text()='Купить']//ancestor::button");;
     private static final SelenideElement creditButton = $x("//span[text()='Купить в кредит']//ancestor::button");;
-    private static final SelenideElement formHeading = $x("//form//preceding-sibling::h3");
+    private static final SelenideElement formHead = $x("//form//preceding-sibling::h3");
     private static final SelenideElement form = $x("//form");
     private static final SelenideElement successNotification = $x("//div[contains(@class, 'notification_status_ok')]");
     private static final SelenideElement errorNotification = $x("//div[contains(@class, 'notification_status_error')]");
@@ -23,7 +23,7 @@ public class CardPage {
         payButton.should(Condition.visible);
         creditButton.should(Condition.visible);
 
-        formHeading.should(Condition.hidden);
+        formHead.should(Condition.hidden);
         form.should(Condition.hidden);
         successNotification.should(Condition.hidden);
         errorNotification.should(Condition.hidden);
@@ -31,13 +31,13 @@ public class CardPage {
 
     public FormPage clickPayButton() {
         payButton.click();
-        formHeading.should(Condition.visible, Condition.text("Оплата по карте"));
+        formHead.should(Condition.visible, Condition.text("Оплата по карте"));
         return new FormPage();
     }
 
     public FormPage clickCreditButton() {
         creditButton.click();
-        formHeading.should(Condition.visible, Condition.text("Кредит по данным карты"));
+        formHead.should(Condition.visible, Condition.text("Кредит по данным карты"));
         return new FormPage();
     }
 
